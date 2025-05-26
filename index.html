@@ -3,20 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Voti in tempo reale</title>
+  <title>Voti Ortona</title>
   <style>
     body {
       font-family: sans-serif;
       text-align: center;
       margin: 0;
       padding: 0;
-      background-color: #f0f0f0;
+      background-color: #e0f7fa;
     }
     h1 {
       background-color: #b30000;
       color: white;
-      padding: 1em;
+      padding: 0.5em;
       margin: 0;
+      font-size: 1.5em;
     }
     .container {
       display: flex;
@@ -36,7 +37,7 @@
       font-weight: bold;
     }
     .count {
-      font-size: 2em;
+      font-size: 2.5em;
       font-weight: bold;
       width: 60px;
       text-align: center;
@@ -44,7 +45,7 @@
     .btn {
       font-size: 1.5em;
       font-weight: bold;
-      padding: 0.2em 0.6em;
+      padding: 0.4em 1em;
       border: none;
       border-radius: 8px;
       cursor: pointer;
@@ -61,17 +62,23 @@
       background-color: #FFD700;
       font-size: 1.2em;
       padding: 0.6em 2em;
-      margin-top: 2em;
+      margin-top: 1em;
     }
     .btn-reset {
       background-color: #b30000;
       color: white;
       font-size: 1em;
-      padding: 0.5em 1em;
+      padding: 0.6em 2em;
       margin-top: 1em;
     }
+    .button-row {
+      display: flex;
+      justify-content: space-between;
+      width: 90%;
+      margin-top: 2em;
+    }
     #total {
-      font-size: 1.5em;
+      font-size: 2em;
       font-weight: bold;
       margin-top: 1em;
     }
@@ -84,12 +91,14 @@
   </style>
 </head>
 <body>
-  <h1>Gestione Voti</h1>
+  <h1>Voti Ortona</h1>
   <div class="container">
-    <button class="btn btn-reset" onclick="azzeraVoti()">Azzera</button>
     <div id="lista"></div>
     <div id="total">Totale voti: 0</div>
-    <button class="btn btn-yellow" onclick="inviaVoti()">Invia</button>
+    <div class="button-row">
+      <button class="btn btn-reset" onclick="azzeraVoti()">Azzera</button>
+      <button class="btn btn-yellow" onclick="inviaVoti()">Invia</button>
+    </div>
     <textarea id="output" readonly onclick="this.select()"></textarea>
   </div>
 
@@ -105,7 +114,7 @@
       row.innerHTML = `
         <div class="name">${nome}</div>
         <div class="count" id="count-${nome}">0</div>
-        <button class="btn btn-green" onclick="modificaVoto('${nome}', 1)">+</button>
+        <button class="btn btn-green" style="min-width: 50px;" onclick="modificaVoto('${nome}', 1)">+</button>
         <button class="btn btn-red" onclick="modificaVoto('${nome}', -1)">-</button>
       `;
       lista.appendChild(row);
@@ -132,13 +141,19 @@
     }
 
     function inviaVoti() {
-      let testo = "🗳️ *Riepilogo voti*\n\n";
+      let testo = "🗳️ *Riepilogo voti – Voti Ortona*\n\n";
       nomi.forEach(nome => {
         testo += `*${nome}*: ${voti[nome]} voti\n`;
       });
-      document.getElementById("output").value = testo;
+      const timestamp = new Date().toLocaleString("it-IT");
+      testo += `\n🕒 Aggiornato alle ${timestamp}`;
+      const output = document.getElementById("output");
+      output.value = testo;
+      output.select();
+      document.execCommand("copy");
+      const whatsappURL = `https://wa.me/?text=${encodeURIComponent(testo)}`;
+      window.open(whatsappURL, '_blank');
     }
   </script>
 </body>
 </html>
-
