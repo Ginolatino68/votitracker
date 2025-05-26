@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Voti Ortona</title>
+  <title>Ortona Sindaco</title>
   <style>
     body {
       font-family: sans-serif;
@@ -17,16 +17,15 @@
       color: #b30000;
       padding: 0.5em;
       margin: 0;
-      font-size: 2em;
-      position: relative;
+      font-size: 2.2em;
     }
     .signature {
-      position: absolute;
-      right: 1em;
-      top: 0.5em;
+      display: block;
       font-style: italic;
-      font-size: 0.9em;
+      font-size: 0.7em;
       color: #666;
+      margin-top: -0.5em;
+      margin-bottom: 0.5em;
     }
     .container {
       display: flex;
@@ -44,6 +43,7 @@
       width: 120px;
       text-align: left;
       font-weight: bold;
+      font-size: 1.1em;
     }
     .count {
       font-size: 2.5em;
@@ -105,7 +105,8 @@
   </style>
 </head>
 <body>
-  <h1>Voti Ortona<span class="signature">by Mario</span></h1>
+  <h1>Ortona Sindaco</h1>
+  <div class="signature">by Mario</div>
   <div class="container">
     <div id="lista"></div>
     <div id="total">Totale voti:<span id="total-count"> 0</span></div>
@@ -155,17 +156,21 @@
     }
 
     function inviaVoti() {
-      let testo = "🗳️ *Riepilogo – Voti Ortona*\n\n";
+      const maxNameLen = Math.max(...nomi.map(n => n.length));
+      let testo = "```";
       nomi.forEach(nome => {
-        testo += `*${nome}*: ${voti[nome]}\n`;
+        const nameCol = nome.padEnd(maxNameLen);
+        const voteCol = voti[nome].toString().padStart(3);
+        testo += `\n${nameCol} | ${voteCol}`;
       });
       const timestamp = new Date().toLocaleString("it-IT");
-      testo += `\n🕒 Aggiornato alle ${timestamp}`;
+      testo += `\n\nAggiornato alle ${timestamp}\n\n`;
+      testo += "```";
       const output = document.getElementById("output");
       output.value = testo;
       output.select();
       document.execCommand("copy");
-      const whatsappURL = `https://wa.me/?text=${encodeURIComponent(testo)}`;
+      const whatsappURL = "https://wa.me/?text=" + encodeURIComponent(testo);
       window.open(whatsappURL, '_blank');
     }
   </script>
