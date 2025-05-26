@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voti in tempo reale</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f0f0;
+    }
+    h1 {
+      background-color: #b30000;
+      color: white;
+      padding: 1em;
+      margin: 0;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1em;
+    }
+    .row {
+      display: flex;
+      align-items: center;
+      margin: 1em 0;
+      gap: 1em;
+    }
+    .name {
+      width: 120px;
+      text-align: right;
+      font-weight: bold;
+    }
+    .count {
+      font-size: 2em;
+      font-weight: bold;
+      width: 60px;
+      text-align: center;
+    }
+    .btn {
+      font-size: 1.5em;
+      font-weight: bold;
+      padding: 0.2em 0.6em;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .btn-green {
+      background-color: #4CAF50;
+      color: white;
+    }
+    .btn-red {
+      background-color: #f44336;
+      color: white;
+    }
+    .btn-yellow {
+      background-color: #FFD700;
+      font-size: 1.2em;
+      padding: 0.6em 2em;
+      margin-top: 2em;
+    }
+    .btn-reset {
+      background-color: #b30000;
+      color: white;
+      font-size: 1em;
+      padding: 0.5em 1em;
+      margin-top: 1em;
+    }
+    #total {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-top: 1em;
+    }
+    textarea {
+      width: 90%;
+      height: 100px;
+      margin-top: 1em;
+      font-size: 1em;
+    }
+  </style>
+</head>
+<body>
+  <h1>Gestione Voti</h1>
+  <div class="container">
+    <button class="btn btn-reset" onclick="azzeraVoti()">Azzera</button>
+    <div id="lista"></div>
+    <div id="total">Totale voti: 0</div>
+    <button class="btn btn-yellow" onclick="inviaVoti()">Invia</button>
+    <textarea id="output" readonly onclick="this.select()"></textarea>
+  </div>
+
+  <script>
+    const nomi = ["Canosa", "Castiglione", "Cocciola", "Di Nardo", "Fratino", "Napolione", "Primavera"];
+    const voti = {};
+    const lista = document.getElementById("lista");
+
+    nomi.forEach(nome => {
+      voti[nome] = 0;
+      const row = document.createElement("div");
+      row.className = "row";
+      row.innerHTML = `
+        <div class="name">${nome}</div>
+        <div class="count" id="count-${nome}">0</div>
+        <button class="btn btn-green" onclick="modificaVoto('${nome}', 1)">+</button>
+        <button class="btn btn-red" onclick="modificaVoto('${nome}', -1)">-</button>
+      `;
+      lista.appendChild(row);
+    });
+
+    function modificaVoto(nome, delta) {
+      voti[nome] = Math.max(0, voti[nome] + delta);
+      document.getElementById(`count-${nome}`).innerText = voti[nome];
+      aggiornaTotale();
+    }
+
+    function aggiornaTotale() {
+      const totale = Object.values(voti).reduce((a, b) => a + b, 0);
+      document.getElementById("total").innerText = `Totale voti: ${totale}`;
+    }
+
+    function azzeraVoti() {
+      nomi.forEach(nome => {
+        voti[nome] = 0;
+        document.getElementById(`count-${nome}`).innerText = "0";
+      });
+      aggiornaTotale();
+      document.getElementById("output").value = "";
+    }
+
+    function inviaVoti() {
+      let testo = "🗳️ *Riepilogo voti*\n\n";
+      nomi.forEach(nome => {
+        testo += `*${nome}*: ${voti[nome]} voti\n`;
+      });
+      document.getElementById("output").value = testo;
+    }
+  </script>
+</body>
+</html>
